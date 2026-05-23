@@ -1,2 +1,26 @@
-@tailwind base;@tailwind components;@tailwind utilities;
-body{@apply bg-gray-100 text-gray-900} .card{@apply bg-white rounded-2xl shadow p-4}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-slate-100 text-slate-800; }
+.app-shell { @apply min-h-screen grid md:grid-cols-[240px_1fr] gap-4 p-4; }
+.sidebar { @apply bg-white rounded-3xl shadow-sm p-3 h-fit sticky top-4 space-y-2; }
+.nav-btn { @apply w-full text-left px-3 py-2 rounded-xl text-sm; }
+.nav-btn.active { @apply bg-emerald-100 text-emerald-700 font-semibold; }
+.content { @apply space-y-4; }
+.page-header { @apply bg-white rounded-3xl p-4 shadow-sm flex items-center justify-between; }
+.card { @apply bg-white rounded-3xl p-5 shadow-sm space-y-3; }
+.kpi-grid { @apply grid sm:grid-cols-2 xl:grid-cols-5 gap-4; }
+.two-col { @apply grid lg:grid-cols-2 gap-4; }
+.row { @apply flex items-center justify-between gap-3 border-b border-slate-100 py-2; }
+.primary { @apply bg-emerald-600 text-white rounded-xl px-4 py-2 inline-flex items-center gap-2; }
+.secondary { @apply bg-violet-600 text-white rounded-xl px-4 py-2; }
+.danger { @apply bg-red-500 text-white rounded-xl px-4 py-2; }
+.ghost { @apply text-slate-500; }
+.grid2 { @apply grid md:grid-cols-2 gap-4; }
+.chart { @apply h-72; }
+.modal { @apply fixed inset-0 bg-black/30 flex justify-center items-center p-4 z-50; }
+.dialog { @apply bg-white rounded-3xl shadow-xl p-5 space-y-3 w-full max-w-xl; }
+input, select, textarea { @apply w-full border border-slate-200 rounded-xl px-3 py-2; }
+.mini { @apply bg-slate-50 rounded-2xl p-3 text-sm; }
+@media (max-width: 768px) { .sidebar { @apply hidden; } .app-shell { @apply grid-cols-1 p-2; } }
