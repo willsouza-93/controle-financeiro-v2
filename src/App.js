@@ -23,7 +23,7 @@ export function App() {
     const addTx = () => { if (!form.amount || form.amount <= 0 || !form.date || !form.type || !form.category)
         return alert('Preencha campos obrigatórios'); if (form.type === 'Empréstimo recebido' && !form.person)
         return alert('Credor obrigatório'); const t = { id: crypto.randomUUID(), ...form, createdAt: now(), updatedAt: now() }; persistTx([t, ...transactions]); alert('Transação salva'); };
-    const markDelivered = (o) => { const updated = orders.map(x => x.id === o.id ? { ...x, status: 'Entregue', updatedAt: now() } : x); persistOrders(updated); if (confirm('Criar receita automática?')) {
+    const markDelivered = (o) => { const updated = orders.map((x) => x.id === o.id ? { ...x, status: 'Entregue', updatedAt: now() } : x); persistOrders(updated); if (confirm('Criar receita automática?')) {
         if (transactions.some(t => t.linkedOrderId === o.id))
             return alert('Receita já registrada');
         persistTx([{ id: crypto.randomUUID(), type: 'Receita', category: 'Encomendas', amount: o.value, date: o.deliveryDate, description: `Receita gerada pela encomenda de ${o.clientName}`, linkedOrderId: o.id, createdAt: now(), updatedAt: now() }, ...transactions]);
