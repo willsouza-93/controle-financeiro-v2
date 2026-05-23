@@ -1,0 +1,16 @@
+import { getMonth, getYear } from 'date-fns';
+const sum = (arr, f) => arr.filter(f).reduce((a, b) => a + b.amount, 0);
+export const totalRevenue = (tx) => sum(tx, t => t.type === 'Receita');
+export const totalOperationalExpenses = (tx) => sum(tx, t => t.type === 'Despesa');
+export const grossProfit = (tx) => totalRevenue(tx) - totalOperationalExpenses(tx);
+export const cashBalance = (tx) => sum(tx, t => ['Receita', 'Aporte', 'Empréstimo recebido'].includes(t.type)) - sum(tx, t => ['Despesa', 'Retirada', 'Pagamento de empréstimo'].includes(t.type));
+export const totalLoansReceived = (tx) => sum(tx, t => t.type === 'Empréstimo recebido');
+export const totalLoansPaid = (tx) => sum(tx, t => t.type === 'Pagamento de empréstimo');
+export const pendingLoansBalance = (tx) => totalLoansReceived(tx) - totalLoansPaid(tx);
+export const totalContributions = (tx) => sum(tx, t => t.type === 'Aporte');
+export const totalWithdrawals = (tx) => sum(tx, t => t.type === 'Retirada');
+export const monthlyRevenue = (tx, m, y) => sum(tx, t => t.type === 'Receita' && getMonth(new Date(t.date)) === m && getYear(new Date(t.date)) === y);
+export const yearlyRevenue = (tx, y) => sum(tx, t => t.type === 'Receita' && getYear(new Date(t.date)) === y);
+export const expensesByCategory = (tx) => Object.entries(tx.filter(t => t.type === 'Despesa').reduce((a, c) => ((a[c.category] = (a[c.category] || 0) + c.amount), a), {})).map(([name, value]) => ({ name, value }));
+export const revenueByMonth = (tx, y) => Array.from({ length: 12 }, (_, m) => ({ month: m, revenue: monthlyRevenue(tx, m, y) }));
+export const expensesByMonth = (tx, y) => Array.from({ length: 12 }, (_, m) => ({ month: m, expenses: sum(tx, t => t.type === 'Despesa' && getMonth(new Date(t.date)) === m && getYear(new Date(t.date)) === y) }));

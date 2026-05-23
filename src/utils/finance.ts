@@ -1,0 +1,17 @@
+import { getMonth, getYear } from 'date-fns';
+import { Transaction } from '../types/finance';
+const sum=(arr:Transaction[],f:(t:Transaction)=>boolean)=>arr.filter(f).reduce((a,b)=>a+b.amount,0);
+export const totalRevenue=(tx:Transaction[])=>sum(tx,t=>t.type==='Receita');
+export const totalOperationalExpenses=(tx:Transaction[])=>sum(tx,t=>t.type==='Despesa');
+export const grossProfit=(tx:Transaction[])=>totalRevenue(tx)-totalOperationalExpenses(tx);
+export const cashBalance=(tx:Transaction[])=>sum(tx,t=>['Receita','Aporte','Empréstimo recebido'].includes(t.type))-sum(tx,t=>['Despesa','Retirada','Pagamento de empréstimo'].includes(t.type));
+export const totalLoansReceived=(tx:Transaction[])=>sum(tx,t=>t.type==='Empréstimo recebido');
+export const totalLoansPaid=(tx:Transaction[])=>sum(tx,t=>t.type==='Pagamento de empréstimo');
+export const pendingLoansBalance=(tx:Transaction[])=>totalLoansReceived(tx)-totalLoansPaid(tx);
+export const totalContributions=(tx:Transaction[])=>sum(tx,t=>t.type==='Aporte');
+export const totalWithdrawals=(tx:Transaction[])=>sum(tx,t=>t.type==='Retirada');
+export const monthlyRevenue=(tx:Transaction[],m:number,y:number)=>sum(tx,t=>t.type==='Receita'&&getMonth(new Date(t.date))===m&&getYear(new Date(t.date))===y);
+export const yearlyRevenue=(tx:Transaction[],y:number)=>sum(tx,t=>t.type==='Receita'&&getYear(new Date(t.date))===y);
+export const expensesByCategory=(tx:Transaction[])=>Object.entries(tx.filter(t=>t.type==='Despesa').reduce((a,c)=>((a[c.category]=(a[c.category]||0)+c.amount),a),{} as Record<string,number>)).map(([name,value])=>({name,value}));
+export const revenueByMonth=(tx:Transaction[],y:number)=>Array.from({length:12},(_,m)=>({month:m,revenue:monthlyRevenue(tx,m,y)}));
+export const expensesByMonth=(tx:Transaction[],y:number)=>Array.from({length:12},(_,m)=>({month:m,expenses:sum(tx,t=>t.type==='Despesa'&&getMonth(new Date(t.date))===m&&getYear(new Date(t.date))===y)}));
